@@ -1,12 +1,10 @@
 package org.ratcm;
 
-import org.ratcm.exceptions.*;
-
 public class CoffeeMaker {
 	/** Array of recipes in coffee maker */
-	private static RecipeBook recipeBook;
+	private RecipeBook recipeBook;
 	/** Inventory of the coffee maker */
-	private static Inventory inventory;
+	private Inventory inventory;
 
 	/**
 	 * Constructor for the coffee maker
@@ -20,7 +18,7 @@ public class CoffeeMaker {
 	/**
 	 * Returns true if the recipe is added to the list of recipes in the CoffeeMaker
 	 * and false otherwise.
-	 * 
+	 *
 	 * @param r
 	 * @return boolean
 	 */
@@ -31,7 +29,7 @@ public class CoffeeMaker {
 	/**
 	 * Returns the name of the successfully deleted recipe or null if the recipe
 	 * cannot be deleted.
-	 * 
+	 *
 	 * @param recipeToDelete
 	 * @return String
 	 */
@@ -42,7 +40,7 @@ public class CoffeeMaker {
 	/**
 	 * Returns the name of the successfully edited recipe or null if the recipe
 	 * cannot be edited.
-	 * 
+	 *
 	 * @param recipeToEdit
 	 * @param r
 	 * @return String
@@ -53,24 +51,20 @@ public class CoffeeMaker {
 
 	/**
 	 * Returns true if inventory was successfully added
-	 * 
+	 *
 	 * @param amtCoffee
 	 * @param amtMilk
 	 * @param amtSugar
 	 * @param amtChocolate
-	 * @return boolean
+	 * @return true if all amounts are correctly updated with a positive or null value; false otherwise
 	 */
-	public void addInventory(String amtCoffee, String amtMilk, String amtSugar, String amtChocolate)
-			throws InventoryException {
-		inventory.addCoffee(amtCoffee);
-		inventory.addMilk(amtMilk);
-		inventory.addSugar(amtSugar);
-		inventory.addChocolate(amtChocolate);
+	public boolean addInventory(String amtCoffee, String amtMilk, String amtSugar, String amtChocolate) {
+		return inventory.addCoffee(amtCoffee) && inventory.addMilk(amtMilk) && inventory.addSugar(amtSugar) && inventory.addChocolate(amtChocolate);
 	}
 
 	/**
 	 * Returns the inventory of the coffee maker
-	 * 
+	 *
 	 * @return Inventory
 	 */
 	public String checkInventory() {
@@ -80,18 +74,22 @@ public class CoffeeMaker {
 	/**
 	 * Returns the change of a user's beverage purchase, or the user's money if the
 	 * beverage cannot be made
-	 * 
+	 *
 	 * @param recipeNb
 	 * @param amtPaid
 	 * @return int
 	 */
 	public int makeCoffee(int recipeNb, int amtPaid) {
 		int change = 0;
+		int beveragePrice;
+		Recipe recipeToPurchase = getRecipes()[recipeNb];
 
-		final Recipe recipeToPurchase = getRecipes()[recipeNb];
-		final int beveragePrice = recipeToPurchase != null
-				? recipeToPurchase.getPrice()
-				: null;
+		if (recipeToPurchase != null) {
+			beveragePrice = recipeToPurchase.getPrice();
+		} else {
+			beveragePrice = 0;
+		}
+
 		if ((recipeToPurchase != null)
 				&& (beveragePrice <= amtPaid)
 				&& (inventory.useIngredients(recipeToPurchase))) {
@@ -105,7 +103,7 @@ public class CoffeeMaker {
 
 	/**
 	 * Returns the list of Recipes in the RecipeBook.
-	 * 
+	 *
 	 * @return Recipe []
 	 */
 	public Recipe[] getRecipes() {
